@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import seaborn as sns
-import tqdm as tqdm
+from tqdm import tqdm 
 
 import torch
 import torch.nn as nn
@@ -258,11 +258,11 @@ def train_model(model, train_loader, val_loader, optimizer, num_epochs, device, 
     train_accuracies = []
     val_accuracies = []
     
-    for epoch in tqdm.tqdm(range(num_epochs), desc="Epochs"):
+    for epoch in tqdm(range(num_epochs), desc="Epochs"):
         model.train()
         running_loss = 0.0
         
-        for images, targets in tqdm.tqdm(train_loader, desc="Batches", leave=False):
+        for images, targets in tqdm(train_loader, desc="Batches", leave=False):
             images = images.to(device)
             optimizer.zero_grad()
             output = model(images)
