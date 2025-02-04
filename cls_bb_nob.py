@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import seaborn as sns
-import tqdm.notebook as tqdm
+import tqdm as tqdm
 
 import torch
 import torch.nn as nn
@@ -155,14 +155,14 @@ class TwoHeadedModel(nn.Module):
         self.num_classes = num_class
 
         self.backbone = nn.Sequential(
-            *list( self.backbone.children() )[:-2]
+            *list( self.base_model.children() )[:-2]
         )
         self.fcs = nn.Linear(
             2048, 2*2*(4 + self.num_classes)
         )
 
     def forward(self, x):
-        x = self.base_model( x )
+        x = self.backbone( x )
         x = F.adaptive_avg_pool2d( x, (1,1))
         x = x.view( x.size(0), -1)
         x = self.fcs( x )
@@ -217,7 +217,7 @@ def evaluate_model(model, data_loader, device, num_classes):
     all_targets = []
     
     with torch.no_grad():
-        for images, targets in tqdm.tqdm(data_loader, desc="Validation", leave=False):
+        for images, targets in tqdm(data_loader, desc="Validation", leave=False):
             images = images.to(device)
             output = model(images)
             
@@ -325,20 +325,3 @@ if __name__ == "__main__":
         device= device,
         num_classes= num_classes
     )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
